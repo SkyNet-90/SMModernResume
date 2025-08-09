@@ -1,0 +1,9 @@
+# Example terraform.tfvars file
+# Copy this file to terraform.tfvars and customize the values
+
+resource_group_name    = "rg-skylar-resume-prod"
+location              = "East US"
+environment           = "production"
+project_name          = "skylar-resume"
+storage_account_name  = "saskylarresumeprod"
+custom_domain         = "www.skylarmatthews.me"
