@@ -10,13 +10,13 @@ terraform {
       version = "~> 2.0"
     }
   }
-  # Remote backend (uncomment and configure after creating state storage):
-  # backend "azurerm" {
-  #   resource_group_name  = "rg-terraform-state"
-  #   storage_account_name = "<stateaccount>"
-  #   container_name       = "tfstate"
-  #   key                  = "resume-prod.tfstate"
-  # }
+  # Remote backend configuration. Replace REPLACE_WITH_STATE_STORAGE_ACCOUNT with your actual storage account name.
+  backend "azurerm" {
+    resource_group_name  = "rg-terraform-state"
+    storage_account_name = "skystateresume01"
+    container_name       = "tfstate"
+    key                  = "resume-prod.tfstate"
+  }
 }
 
 provider "azurerm" {
@@ -58,9 +58,8 @@ resource "azurerm_storage_account" "static_site" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
   account_kind             = "StorageV2"
-  allow_blob_public_access = true # required for static website hosting
-  min_tls_version          = "TLS1_2"
-  enable_https_traffic_only = true
+  min_tls_version             = "TLS1_2"
+  https_traffic_only_enabled  = true
 
   # Enforce that only the $web container is public (future enhancement: add container-level ACLs)
 
@@ -108,7 +107,7 @@ resource "azurerm_cdn_endpoint" "main" {
   }
 
   delivery_rule {
-    name  = "spa-routing"
+    name  = "sparouting"
     order = 1
 
     url_file_extension_condition {

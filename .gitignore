@@ -33,6 +33,9 @@ terraform/terraform.tfstate.backup
 terraform/terraform.tfvars
 *.tfplan
 
+# Azure CLI
+.azure/
+
 # Logs
 logs/
 *.log
@@ -59,3 +62,6 @@ jspm_packages/
 
 # Yarn Integrity file
 .yarn-integrity
+
+#infracost 
+.infracost
