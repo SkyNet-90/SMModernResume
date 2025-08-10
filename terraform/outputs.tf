@@ -13,14 +13,24 @@ output "storage_account_primary_web_endpoint" {
   value       = azurerm_storage_account.static_site.primary_web_endpoint
 }
 
-output "cdn_endpoint_hostname" {
-  description = "Hostname of the CDN endpoint"
-  value       = azurerm_cdn_endpoint.main.fqdn
+output "frontdoor_endpoint_hostname" {
+  description = "Hostname of the Front Door endpoint"
+  value       = azurerm_cdn_frontdoor_endpoint.main.host_name
 }
 
-output "cdn_endpoint_url" {
-  description = "URL of the CDN endpoint"
-  value       = "https://${azurerm_cdn_endpoint.main.fqdn}"
+output "frontdoor_endpoint_url" {
+  description = "URL of the Front Door endpoint"
+  value       = "https://${azurerm_cdn_frontdoor_endpoint.main.host_name}"
+}
+
+output "frontdoor_profile_name" {
+  description = "Name of the Front Door profile"
+  value       = azurerm_cdn_frontdoor_profile.main.name
+}
+
+output "custom_domain_url" {
+  description = "Custom domain URL"
+  value       = "https://${var.custom_domain}"
 }
 
 output "application_insights_instrumentation_key" {

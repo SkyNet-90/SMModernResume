@@ -71,60 +71,133 @@ resource "azurerm_storage_account" "static_site" {
   tags = local.all_tags
 }
 
-# CDN Profile
-resource "azurerm_cdn_profile" "main" {
+# Front Door Profile (Standard)
+resource "azurerm_cdn_frontdoor_profile" "main" {
   name                = "${var.project_name}-cdn"
-  location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
-  sku                 = "Standard_Microsoft"
-  tags                = local.all_tags
+  sku_name           = "Standard_AzureFrontDoor"
+  tags               = local.all_tags
 }
 
-# CDN Endpoint
-resource "azurerm_cdn_endpoint" "main" {
-  name                = "${var.project_name}-endpoint"
-  profile_name        = azurerm_cdn_profile.main.name
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+# Front Door Origin Group
+resource "azurerm_cdn_frontdoor_origin_group" "main" {
+  name                     = "storage-origin-group"
+  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.main.id
 
-  origin {
-    name      = "storage"
-    host_name = azurerm_storage_account.static_site.primary_web_host
+  load_balancing {
+    sample_size                        = 4
+    successful_samples_required        = 3
+    additional_latency_in_milliseconds = 50
   }
 
-  origin_host_header = azurerm_storage_account.static_site.primary_web_host
-
-  # Caching rules for better performance
-  global_delivery_rule {
-    cache_expiration_action {
-      behavior = "Override"
-      duration = "1.00:00:00"
-    }
-
-    cache_key_query_string_action {
-      behavior   = "IncludeAll"
-    }
+  health_probe {
+    interval_in_seconds = 240
+    path                = "/"
+    protocol            = "Https"
+    request_type        = "HEAD"
   }
+}
 
-  delivery_rule {
-    name  = "sparouting"
-    order = 1
+# Front Door Origin
+resource "azurerm_cdn_frontdoor_origin" "main" {
+  name                          = "storage-origin"
+  cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.main.id
+  enabled                       = true
 
-    url_file_extension_condition {
-      operator         = "LessThan"
-      negate_condition = false
-      match_values     = ["1"]
-    }
+  certificate_name_check_enabled = true
+  host_name                      = azurerm_storage_account.static_site.primary_web_host
+  http_port                      = 80
+  https_port                     = 443
+  origin_host_header             = azurerm_storage_account.static_site.primary_web_host
+  priority                       = 1
+  weight                         = 1000
+}
 
-    url_rewrite_action {
-      source_pattern          = "/"
-      destination             = "/index.html"
-      preserve_unmatched_path = false
-    }
+# Front Door Endpoint
+resource "azurerm_cdn_frontdoor_endpoint" "main" {
+  name                     = "${var.project_name}-endpoint"
+  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.main.id
+  enabled                  = true
+  tags                     = local.all_tags
+}
+
+# Front Door Route
+resource "azurerm_cdn_frontdoor_route" "main" {
+  name                          = "default-route"
+  cdn_frontdoor_endpoint_id     = azurerm_cdn_frontdoor_endpoint.main.id
+  cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.main.id
+  cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.main.id]
+  enabled                       = true
+
+  forwarding_protocol    = "MatchRequest"
+  https_redirect_enabled = true
+  patterns_to_match      = ["/*"]
+  supported_protocols    = ["Http", "Https"]
+
+  cdn_frontdoor_custom_domain_ids = [azurerm_cdn_frontdoor_custom_domain.main.id]
+  link_to_default_domain         = false
+
+  cache {
+    query_string_caching_behavior = "IncludeSpecifiedQueryStrings"
+    query_strings                = []
+    compression_enabled          = true
+    content_types_to_compress = [
+      "application/eot",
+      "application/font",
+      "application/font-sfnt",
+      "application/javascript",
+      "application/json",
+      "application/opentype",
+      "application/otf",
+      "application/pkcs7-mime",
+      "application/truetype",
+      "application/ttf",
+      "application/vnd.ms-fontobject",
+      "application/xhtml+xml",
+      "application/xml",
+      "application/xml+rss",
+      "application/x-font-opentype",
+      "application/x-font-truetype",
+      "application/x-font-ttf",
+      "application/x-httpd-cgi",
+      "application/x-javascript",
+      "application/x-mpegurl",
+      "application/x-opentype",
+      "application/x-otf",
+      "application/x-perl",
+      "application/x-ttf",
+      "font/eot",
+      "font/ttf",
+      "font/otf",
+      "font/opentype",
+      "image/svg+xml",
+      "text/css",
+      "text/csv",
+      "text/html",
+      "text/javascript",
+      "text/js",
+      "text/plain",
+      "text/richtext",
+      "text/tab-separated-values",
+      "text/xml",
+      "text/x-script",
+      "text/x-component",
+      "text/x-java-source"
+    ]
   }
+}
 
-  # (Optional) Add custom domain resource referencing var.custom_domain once DNS is set
-  tags = local.all_tags
+# Custom Domain for Front Door
+resource "azurerm_cdn_frontdoor_custom_domain" "main" {
+  name                     = "www-skylarmatthews-me"
+  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.main.id
+  dns_zone_id              = null
+  host_name                = var.custom_domain
+
+  tls {
+    certificate_type    = "ManagedCertificate"
+    minimum_tls_version = "TLS12"
+  }
 }
 
 # Application Insights for monitoring

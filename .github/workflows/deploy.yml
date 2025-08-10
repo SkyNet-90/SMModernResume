@@ -74,12 +74,14 @@ jobs:
             --auth-mode login \
             --overwrite
             
-    - name: Purge CDN
+    - name: Purge Front Door Cache
       uses: azure/CLI@v2
       with:
         inlineScript: |
-          az cdn endpoint purge \
+          # Purge Front Door Standard cache
+          az afd endpoint purge \
             --profile-name skylar-resume-cdn \
-            --name skylar-resume-endpoint \
+            --endpoint-name skylar-resume-endpoint \
             --resource-group rg-skylar-resume \
-            --content-paths "/*"
+            --content-paths "/*" \
+            --domains "www.skylarmatthews.me"
