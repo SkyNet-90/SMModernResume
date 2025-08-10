@@ -82,31 +82,10 @@ jobs:
         name: build-files
         path: dist/
         
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: ${{ env.TERRAFORM_VERSION }}
-        terraform_wrapper: false
-        
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
-    - name: Terraform Init
-      run: terraform init
-      working-directory: terraform
-      
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
-      working-directory: terraform
-      
-    - name: Get Storage Account Name
-      id: storage
-      run: |
-        STORAGE_ACCOUNT=$(terraform output -raw storage_account_name)
-        echo "account_name=$STORAGE_ACCOUNT" >> $GITHUB_OUTPUT
-      working-directory: terraform
       
     - name: Deploy to Azure Storage
       uses: azure/CLI@v1
@@ -116,7 +95,7 @@ jobs:
           az storage blob upload-batch \
             --destination '$web' \
             --source dist/ \
-            --account-name ${{ steps.storage.outputs.account_name }} \
+            --account-name saskylarresume \
             --auth-mode login \
             --overwrite
             
@@ -125,13 +104,8 @@ jobs:
       with:
         azcliversion: 2.53.0
         inlineScript: |
-          cd terraform
-          CDN_PROFILE=$(terraform output -raw resource_group_name | sed 's/rg-//')
-          CDN_ENDPOINT="${CDN_PROFILE}-endpoint"
-          RESOURCE_GROUP=$(terraform output -raw resource_group_name)
-          
           az cdn endpoint purge \
-            --profile-name "${CDN_PROFILE}-cdn" \
-            --name "$CDN_ENDPOINT" \
-            --resource-group "$RESOURCE_GROUP" \
+            --profile-name skylar-resume-cdn \
+            --name skylar-resume-endpoint \
+            --resource-group rg-skylar-resume \
             --content-paths "/*"
