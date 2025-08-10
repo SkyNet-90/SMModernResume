@@ -125,6 +125,7 @@ jobs:
       with:
         azcliversion: 2.53.0
         inlineScript: |
+          cd terraform
           CDN_PROFILE=$(terraform output -raw resource_group_name | sed 's/rg-//')
           CDN_ENDPOINT="${CDN_PROFILE}-endpoint"
           RESOURCE_GROUP=$(terraform output -raw resource_group_name)
@@ -134,4 +135,3 @@ jobs:
             --name "$CDN_ENDPOINT" \
             --resource-group "$RESOURCE_GROUP" \
             --content-paths "/*"
-      working-directory: terraform
