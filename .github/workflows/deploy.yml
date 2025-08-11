@@ -1,4 +1,4 @@
-name: Deploy Resume Website to Azure
+name: Validate Resume Website Build
 
 on:
   push:
@@ -8,13 +8,14 @@ on:
       - 'DEPLOYMENT.md'
       - 'SECURITY.md'
       - '.github/dependabot.yml'
+      - 'terraform/**'
   workflow_dispatch:
 
 env:
   NODE_VERSION: '18'
 
 jobs:
-  test:
+  validate:
     runs-on: ubuntu-latest
     
     steps:
@@ -36,52 +37,24 @@ jobs:
     - name: Build project
       run: npm run build
       
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-files
-        path: dist/
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [test]
-    if: github.ref == 'refs/heads/main'
-    environment: production
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Download build artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: build-files
-        path: dist/
+    - name: Validate build output
+      run: |
+        echo "✅ Build completed successfully!"
+        echo "📦 Files in dist/:"
+        ls -la dist/
+        echo "📊 Total files: $(find dist -type f | wc -l)"
+        echo "📄 Build includes index.html: $(test -f dist/index.html && echo 'Yes' || echo 'No')"
         
-    - name: Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
-    - name: Deploy to Azure Storage
-      uses: azure/CLI@v2
-      with:
-        inlineScript: |
-          az storage blob upload-batch \
-            --destination '$web' \
-            --source dist/ \
-            --account-name saskylarresume \
-            --auth-mode login \
-            --overwrite
-            
-    - name: Purge Front Door Cache
-      uses: azure/CLI@v2
-      with:
-        inlineScript: |
-          # Purge Front Door Standard cache
-          az afd endpoint purge \
-            --profile-name skylar-resume-cdn \
-            --endpoint-name skylar-resume-endpoint \
-            --resource-group rg-skylar-resume \
-            --content-paths "/*" \
-            --domains "www.skylarmatthews.me"
+    - name: Deployment notification
+      if: github.ref == 'refs/heads/main'
+      run: |
+        echo "## 🏠 Self-Hosted Deployment" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ **Build Status:** Successful" >> $GITHUB_STEP_SUMMARY
+        echo "🔄 **Deployment:** Automatic via Git-Sync (within 5 minutes)" >> $GITHUB_STEP_SUMMARY
+        echo "🏠 **Infrastructure:** Self-hosted on TrueNAS Scale" >> $GITHUB_STEP_SUMMARY
+        echo "🌐 **Website:** https://www.skylarmatthews.me" >> $GITHUB_STEP_SUMMARY
+        echo "🚀 **Method:** Cloudflare Tunnel + Portainer + Git-Sync" >> $GITHUB_STEP_SUMMARY
+        echo "📅 **Build Time:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Your resume website will be automatically updated by the git-sync container running on your home server!" >> $GITHUB_STEP_SUMMARY

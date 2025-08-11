@@ -1,40 +1,42 @@
 # Skylar Matthews - Resume Website
 
-A modern, responsive resume website built with React, TypeScript, and Tailwind CSS, deployed on Azure with Terraform infrastructure as code.
+A modern, responsive resume website built with React, TypeScript, and Tailwind CSS, self-hosted on TrueNAS Scale with automated Git-sync deployment.
 
 ## 🚀 Features
 
 - **Modern Design**: Clean, professional UI with smooth animations
 - **Responsive**: Optimized for all devices and screen sizes
-- **Performance**: Fast loading with Azure CDN integration
+- **Self-Hosted**: Running on TrueNAS Scale with Cloudflare Tunnel
 - **SEO Optimized**: Meta tags and structured data for search engines
-- **CI/CD Pipeline**: Automated deployment with GitHub Actions
-- **Infrastructure as Code**: Terraform for Azure resource management
-- **Monitoring**: Application Insights integration
-- **Security Hardening**: CSP, security headers, Terraform tag merging, storage hardening
+- **Automated Deployment**: Git-sync container for seamless updates
+- **Containerized**: Docker containers managed with Portainer
+- **Zero-Cost Infrastructure**: No cloud hosting fees
+- **Security**: Cloudflare protection with zero open ports
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: React 18, TypeScript, Tailwind CSS, Framer Motion
 - **Build Tool**: Vite
-- **Infrastructure**: Azure Storage (Static Website), Azure CDN, Application Insights
-- **IaC**: Terraform
-- **CI/CD**: GitHub Actions
-- **Monitoring**: Azure Application Insights, Log Analytics
+- **Infrastructure**: TrueNAS Scale, Portainer, Docker
+- **Networking**: Cloudflare Tunnel for secure public access
+- **Deployment**: Git-sync automated deployment
+- **CI/CD**: GitHub Actions for build validation
+- **Web Server**: Nginx (Alpine)
 
 ## 📋 Prerequisites
 
 - Node.js 18+
 - npm or yarn
-- Azure CLI
-- Terraform 1.5+
-- Azure subscription
+- TrueNAS Scale server
+- Portainer (for container management)
+- Cloudflare account with domain
+- Docker knowledge (basic)
 
 ## 🏗️ Local Development
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/SkyNet-90/SMModernResume.git
    cd SkylarMatthewsResumeWebsite
    ```
 
@@ -53,87 +55,84 @@ A modern, responsive resume website built with React, TypeScript, and Tailwind C
    npm run build
    ```
 
-## 🌐 Azure Deployment
+## � Self-Hosted Deployment
 
 ### Infrastructure Setup
 
-1. **Navigate to terraform directory**
-   ```bash
-   cd terraform
-   ```
+1. **TrueNAS Scale with Portainer**
+   - Ensure TrueNAS Scale is running
+   - Install Portainer for container management
+   - Have basic Docker knowledge
 
-2. **Copy and configure variables**
-   ```bash
-   cp terraform.tfvars.example terraform.tfvars
-   # Edit terraform.tfvars with your specific values
-   ```
+2. **Cloudflare Tunnel Setup**
+   - Create Cloudflare account
+   - Set up domain in Cloudflare
+   - Create new tunnel for your domain
 
-3. **Initialize Terraform**
-   ```bash
-   terraform init
-   ```
+### Container Stack Deployment
 
-4. **Plan deployment**
-   ```bash
-   terraform plan
-   ```
+1. **Create Portainer Stack**
+   - Access Portainer interface
+   - Create new stack named `skylar-resume`
+   - Use the docker-compose.yml configuration (see deployment docs)
 
-5. **Apply infrastructure**
-   ```bash
-   terraform apply
-   ```
+2. **Configure Environment Variables**
+   - `CF_TUNNEL_TOKEN`: Your Cloudflare tunnel token
+   - `GIT_REPO`: https://github.com/SkyNet-90/SMModernResume.git
+   - `GIT_BRANCH`: main
 
-### Application Deployment
+3. **Deploy Stack**
+   - Deploy the stack in Portainer
+   - Verify all containers start successfully
+   - Check git-sync container logs for build progress
 
-The application automatically deploys via GitHub Actions when changes are pushed to the main branch.
+### Automatic Deployment
 
-#### Manual Deployment
+The application automatically deploys when changes are pushed to the main branch:
 
-1. **Build the application**
-   ```bash
-   npm run build
-   ```
+1. **Git-sync container** monitors repository every 5 minutes
+2. **Automatically builds** project with npm when changes detected  
+3. **Deploys built files** to Nginx web directory
+4. **Website updates** within 5 minutes of git push
 
-2. **Deploy to Azure Storage**
-   ```bash
-   az storage blob upload-batch \
-     --destination '$web' \
-     --source dist/ \
-     --account-name <storage-account-name> \
-     --auth-mode login
-   ```
+#### Manual Deployment Trigger
+
+To force immediate deployment:
+```bash
+# Restart the git-sync container in Portainer
+docker restart resume-git-sync
+```
 
 ## 🔧 Configuration
 
-### GitHub Actions Secrets
+### Cloudflare Tunnel Configuration
 
-Set up the following secrets in your GitHub repository:
+1. **Create tunnel** in Cloudflare Zero Trust dashboard
+2. **Configure public hostnames**:
+   - `www.yourdomain.com` → `http://container-name:80`
+   - `yourdomain.com` → `http://container-name:80`
+3. **Update DNS** to point to tunnel
 
-- `AZURE_CREDENTIALS`: Azure service principal credentials for authentication
+### Container Services
 
-### Environment Variables
-
-Create a `.env` file for local development (optional):
-
-```env
-VITE_APP_INSIGHTS_KEY=your-app-insights-key
-```
+- **Nginx**: Serves the website on port 8081
+- **Git-sync**: Monitors repo and builds/deploys automatically  
+- **File Browser**: Web interface for file management (port 8082)
+- **Cloudflare Tunnel**: Secure public access
 
 ## 📊 Monitoring
 
-The application includes Azure Application Insights for:
-
-- Performance monitoring
-- Error tracking
-- User analytics
-- Custom telemetry
+- **Portainer Dashboard**: Container health and logs
+- **File Browser**: View deployed files and source code
+- **Git-sync Logs**: Build and deployment status
+- **Cloudflare Analytics**: Traffic and performance metrics
 
 ## 🎨 Customization
 
 ### Updating Content
 
 - **Experience**: Edit `src/data/index.ts` - `experiences` array
-- **Certifications**: Edit `src/data/index.ts` - `certifications` array
+- **Certifications**: Edit `src/data/index.ts` - `certifications` array  
 - **Skills**: Edit `src/data/index.ts` - `skills` array
 - **Contact Info**: Update social links in `src/components/Navigation.tsx`
 
@@ -146,9 +145,18 @@ The application includes Azure Application Insights for:
 ## 🚀 Performance
 
 - **Lighthouse Score**: 90+ across all metrics
-- **CDN**: Global content delivery via Azure CDN
-- **Caching**: Optimized caching strategies
-- **Bundle Size**: Minimized with Vite's optimizations
+- **Cloudflare CDN**: Global content delivery and caching
+- **Nginx**: Optimized static file serving
+- **Container Efficiency**: Lightweight Alpine Linux containers
+
+## 💡 Benefits of Self-Hosting
+
+- **Zero hosting costs** (except domain registration)
+- **Full control** over infrastructure and data
+- **Learning experience** with containerization and networking
+- **Scalable** - can easily add more services
+- **Secure** - no open ports, Cloudflare protection
+- **Professional setup** - enterprise-grade architecture
 
 ## 📄 License
 
@@ -159,7 +167,7 @@ This project is open source and available under the [MIT License](LICENSE).
 While this is a personal resume website, suggestions and improvements are welcome! Please feel free to:
 
 1. Fork the repository
-2. Create a feature branch
+2. Create a feature branch  
 3. Make your changes
 4. Submit a pull request
 
@@ -171,8 +179,9 @@ While this is a personal resume website, suggestions and improvements are welcom
 
 ---
 
-Built with ❤️ by Skylar Matthews
+Built with ❤️ by Skylar Matthews | Self-hosted on TrueNAS Scale
 
 ---
-### Deployment Hardening Notes
-This repository includes optional Terraform enhancements (tag merging, remote backend scaffold, TLS enforcement) and a default CSP in `index.html`. If you enable a remote backend, uncomment the backend block in `terraform/main.tf` after provisioning the state storage account.
+
+### Architecture Notes
+This deployment uses a containerized architecture with Git-sync for automated deployment, Cloudflare Tunnels for secure public access, and Portainer for container management. The setup provides enterprise-grade reliability while maintaining zero recurring hosting costs.

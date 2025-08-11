@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
 
           <div className="text-sm text-gray-500">
             <p>&copy; {new Date().getFullYear()} Skylar Matthews. All rights reserved.</p>
-            <p className="mt-2">Built with React, TypeScript, and Tailwind CSS. Deployed on Azure.</p>
+            <p className="mt-2">Built with React, TypeScript, and Tailwind CSS. Self-hosted on TrueNAS Scale.</p>
           </div>
         </motion.div>
       </div>
