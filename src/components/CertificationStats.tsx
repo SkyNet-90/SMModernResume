@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Award, Calendar, TrendingUp, Star } from 'lucide-react';
+import { certifications } from '../data';
 
 interface CounterProps {
     end: number;
@@ -78,11 +79,13 @@ const StatsCard: React.FC<StatsCardProps> = ({ icon, title, value, suffix = '', 
 };
 
 const CertificationStats: React.FC = () => {
-    // Calculate certification stats
-    const totalCerts = 21; // Based on your certification list
-    const microsoftCerts = 11;
+    const shouldReduceMotion = useReducedMotion();
+
+    // Derive certification stats from data
+    const totalCerts = certifications.length;
+    const microsoftCerts = certifications.filter(c => c.issuer === 'Microsoft' || c.issuer === 'Microsoft Applied Skills').length;
     const yearsOfCertification = 10; // 10+ years of professional development and certifications
-    const expertLevelCerts = 4; // Solutions Architect, DevOps Engineer, M365 Admin Expert, etc.
+    const expertLevelCerts = certifications.filter(c => c.name.toLowerCase().includes('expert')).length;
 
     return (
         <section id="stats" className="py-20 bg-gradient-to-br from-gray-900 via-blue-900/20 to-gray-900">
@@ -150,7 +153,7 @@ const CertificationStats: React.FC = () => {
 
                     <div className="relative overflow-hidden">
                         <motion.div
-                            animate={{ x: [0, -2000] }}
+                            animate={shouldReduceMotion ? {} : { x: [0, -2000] }}
                             transition={{
                                 x: {
                                     repeat: Infinity,
@@ -212,9 +215,9 @@ const CertificationStats: React.FC = () => {
                 >
                     <div className="glass-effect rounded-2xl p-8 bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/30">
                         <h3 className="text-2xl font-bold text-white mb-4">Latest Achievement</h3>
-                        <p className="text-green-400 text-lg mb-2">Microsoft Applied Skills</p>
-                        <p className="text-white font-semibold">Migrate SQL Server workloads to Azure SQL Database</p>
-                        <p className="text-gray-400 text-sm mt-2">Earned December 2024</p>
+                        <p className="text-green-400 text-lg mb-2">Microsoft Certified</p>
+                        <p className="text-white font-semibold">Microsoft 365 Certified: Copilot and Agent Administration Fundamentals</p>
+                        <p className="text-gray-400 text-sm mt-2">Earned February 2026</p>
                     </div>
                 </motion.div>
             </div>

@@ -18,6 +18,37 @@ export const experiences: Experience[] = [
 ];
 
 export const certifications: Certification[] = [
+  // Latest Certifications (2025-2026)
+  {
+    name: "Microsoft 365 Certified: Copilot and Agent Administration Fundamentals",
+    issuer: "Microsoft",
+    issued: "Feb 2026",
+    credentialId: "E481A808ABFB407F",
+    logo: "microsoft"
+  },
+  {
+    name: "Microsoft Certified: Power Platform Fundamentals",
+    issuer: "Microsoft",
+    issued: "Nov 2025",
+    credentialId: "3727BD43F76DF8D",
+    logo: "microsoft"
+  },
+  {
+    name: "Offensive Azure Security Professional",
+    issuer: "CloudBreach",
+    issued: "Oct 2025",
+    credentialId: "68f325b4e7553c60289571c2",
+    logo: "cloudbreach"
+  },
+  {
+    name: "Microsoft Certified: Azure Database Administrator Associate",
+    issuer: "Microsoft",
+    issued: "Sep 2025",
+    expires: "Sep 2026",
+    credentialId: "CEFD4F8CAA45C827",
+    logo: "microsoft"
+  },
+
   // Microsoft Applied Skills
   {
     name: "Migrate SQL Server workloads to Azure SQL Database",

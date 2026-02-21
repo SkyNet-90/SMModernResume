@@ -104,6 +104,7 @@ const Navigation: React.FC = () => {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => setIsOpen(false)}
                     className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
                     aria-label={link.label}
                   >

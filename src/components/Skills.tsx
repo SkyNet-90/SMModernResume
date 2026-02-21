@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { skills } from '../data';
 import {
     Cloud,
@@ -110,6 +110,8 @@ const SkillCategory: React.FC<SkillCategoryProps> = ({ title, icon: Icon, skills
 };
 
 const Skills: React.FC = () => {
+    const shouldReduceMotion = useReducedMotion();
+
     // Floating skill bubbles for background animation
     const floatingSkills = ['Azure', 'AWS', 'K8s', 'Docker', 'Python', 'Terraform'];
 
@@ -121,14 +123,14 @@ const Skills: React.FC = () => {
                     <motion.div
                         key={skill}
                         initial={{ opacity: 0 }}
-                        animate={{
+                        animate={shouldReduceMotion ? { opacity: 0.15 } : {
                             opacity: [0.1, 0.3, 0.1],
                             x: [0, 100, -50, 0],
                             y: [0, -80, 50, 0]
                         }}
                         transition={{
                             duration: 20,
-                            repeat: Infinity,
+                            repeat: shouldReduceMotion ? 0 : Infinity,
                             delay: index * 3,
                             ease: "linear"
                         }}

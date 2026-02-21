@@ -23,7 +23,31 @@ const Contact: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission - replace with actual email service
+    // TODO: Wire up EmailJS — install is already in package.json (@emailjs/browser)
+    // Replace the placeholder IDs below with your actual EmailJS credentials:
+    //
+    // import emailjs from '@emailjs/browser';
+    //
+    // try {
+    //   await emailjs.send(
+    //     'YOUR_SERVICE_ID',   // e.g. 'service_xxxxxxx'
+    //     'YOUR_TEMPLATE_ID',  // e.g. 'template_xxxxxxx'
+    //     {
+    //       from_name: formData.name,
+    //       from_email: formData.email,
+    //       message: formData.message,
+    //     },
+    //     'YOUR_PUBLIC_KEY'    // e.g. 'xxxxxxxxxxxxxxx'
+    //   );
+    //   setSubmitted(true);
+    //   setFormData({ name: '', email: '', message: '' });
+    // } catch (error) {
+    //   console.error('Failed to send message:', error);
+    // } finally {
+    //   setIsSubmitting(false);
+    // }
+
+    // Placeholder until EmailJS is configured:
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitted(true);

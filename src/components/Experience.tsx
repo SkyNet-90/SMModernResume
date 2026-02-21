@@ -36,7 +36,7 @@ const Experience: React.FC = () => {
                   {exp.title}
                 </h3>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between text-blue-400 mb-4">
-                  <span className="text-lg font-medium">{exp.company}</span>
+                  <span className="text-lg font-medium">{exp.company} • {exp.location}</span>
                   <span className="text-sm">{exp.duration}</span>
                 </div>
                 <p className="text-gray-300 leading-relaxed mb-6">
