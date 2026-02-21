@@ -167,7 +167,7 @@ export const certifications: Certification[] = [
     name: "HashiCorp Certified: Terraform Associate (003)",
     issuer: "HashiCorp",
     issued: "Oct 2023",
-    expires: "Oct 2025",
+    expires: "Oct 2027",
     logo: "hashicorp"
   },
   {

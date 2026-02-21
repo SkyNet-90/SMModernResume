@@ -4,6 +4,16 @@ import { certifications } from '../data';
 import { Award, Calendar, ExternalLink } from 'lucide-react';
 import { Certification } from '../types';
 
+// Parse "Mon YYYY" strings as the last day of that month so a cert listed as
+// "Jan 2026" is treated as expiring Jan 31, 2026 (not Jan 1).
+const parseExpiryDate = (dateStr: string): Date => {
+  const [month, year] = dateStr.split(' ');
+  const d = new Date(`${month} 1, ${year}`);
+  // Advance to the first day of the next month then subtract one day
+  d.setMonth(d.getMonth() + 1, 0);
+  return d;
+};
+
 const CertificationCard: React.FC<{ cert: Certification; isExpired?: boolean }> = ({ cert, isExpired = false }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
@@ -72,12 +82,13 @@ const CertificationCard: React.FC<{ cert: Certification; isExpired?: boolean }> 
 );
 
 const Certifications: React.FC = () => {
+  const now = new Date();
   const activeCertifications = certifications.filter(cert =>
-    !cert.expires || new Date(cert.expires) > new Date()
+    !cert.expires || parseExpiryDate(cert.expires) >= now
   );
 
   const expiredCertifications = certifications.filter(cert =>
-    cert.expires && new Date(cert.expires) <= new Date()
+    cert.expires && parseExpiryDate(cert.expires) < now
   );
 
   return (
