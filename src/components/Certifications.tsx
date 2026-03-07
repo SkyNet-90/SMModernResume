@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { certifications } from '../data';
-import { Award, Calendar, ExternalLink } from 'lucide-react';
+import { certifications, appliedSkills } from '../data';
+import { Award, Calendar, ExternalLink, Zap } from 'lucide-react';
 import { Certification } from '../types';
 
 // Parse "Mon YYYY" strings as the last day of that month so a cert listed as
@@ -81,6 +81,55 @@ const CertificationCard: React.FC<{ cert: Certification; isExpired?: boolean }> 
   </motion.div>
 );
 
+const AppliedSkillCard: React.FC<{ skill: Certification }> = ({ skill }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6 }}
+    viewport={{ once: true }}
+    className="glass-effect rounded-xl p-6 hover:transform hover:scale-105 transition-all duration-300 border border-teal-500/20"
+  >
+    <div className="flex items-start justify-between mb-4">
+      <div className="flex items-center space-x-3">
+        <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-lg flex items-center justify-center">
+          <Zap size={24} className="text-white" />
+        </div>
+        <span className="bg-teal-500/20 text-teal-400 px-2 py-1 rounded text-xs font-medium">
+          Applied Skill
+        </span>
+      </div>
+      {skill.credentialId && (
+        <a
+          href={`https://learn.microsoft.com/api/credentials/share/en-us/${skill.credentialId}?tmpl=certification`}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`View credential for ${skill.name}`}
+          className="text-gray-400 hover:text-teal-400 transition-colors duration-300"
+        >
+          <ExternalLink size={16} />
+        </a>
+      )}
+    </div>
+
+    <h3 className="text-lg font-semibold text-white mb-2 leading-tight">
+      {skill.name}
+    </h3>
+
+    <p className="text-teal-400 font-medium mb-3">{skill.issuer}</p>
+
+    <div className="flex items-center space-x-2 text-sm text-gray-400 mb-3">
+      <Calendar size={14} />
+      <span>Issued: {skill.issued}</span>
+    </div>
+
+    {skill.credentialId && (
+      <p className="text-xs text-gray-500">
+        ID: {skill.credentialId}
+      </p>
+    )}
+  </motion.div>
+);
+
 const Certifications: React.FC = () => {
   const now = new Date();
   const activeCertifications = certifications.filter(cert =>
@@ -119,7 +168,26 @@ const Certifications: React.FC = () => {
           </div>
         </div>
 
-        {/* Expired Certifications */}
+        {/* Applied Skills */}
+        <div className="mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-8"
+          >
+            <h3 className="text-2xl font-bold text-white mb-2">Applied Skills</h3>
+            <p className="text-gray-400 text-sm">Hands-on validated competencies from Microsoft</p>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {appliedSkills.map((skill) => (
+              <AppliedSkillCard key={skill.credentialId ?? skill.name} skill={skill} />
+            ))}
+          </div>
+        </div>
+
+        {/* Previous Certifications */}
         {expiredCertifications.length > 0 && (
           <div>
             <h3 className="text-2xl font-bold text-white mb-8 text-center">Previous Certifications</h3>

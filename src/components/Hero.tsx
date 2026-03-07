@@ -36,7 +36,7 @@ const Hero: React.FC = () => {
             <h2 className="text-2xl md:text-3xl text-gray-300 mb-4">Cloud Engineer</h2>
             <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
               Specializing in Azure, AWS, and multi-cloud architectures.
-              Passionate about automation, infrastructure as code, and building scalable cloud solutions.
+              Passionate about AI-powered automation, infrastructure as code, and building scalable cloud solutions.
             </p>
           </motion.div>
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Award, Calendar, TrendingUp, Star } from 'lucide-react';
-import { certifications } from '../data';
+import { certifications, appliedSkills } from '../data';
 
 interface CounterProps {
     end: number;
@@ -82,8 +82,8 @@ const CertificationStats: React.FC = () => {
     const shouldReduceMotion = useReducedMotion();
 
     // Derive certification stats from data
-    const totalCerts = certifications.length;
-    const microsoftCerts = certifications.filter(c => c.issuer === 'Microsoft' || c.issuer === 'Microsoft Applied Skills').length;
+    const totalCerts = certifications.length + appliedSkills.length;
+    const microsoftCerts = certifications.filter(c => c.issuer === 'Microsoft').length + appliedSkills.length;
     const yearsOfCertification = 10; // 10+ years of professional development and certifications
     const expertLevelCerts = certifications.filter(c => c.name.toLowerCase().includes('expert')).length;
 
@@ -111,7 +111,7 @@ const CertificationStats: React.FC = () => {
                         title="Total Certifications"
                         value={totalCerts}
                         suffix="+"
-                        description="Active certifications across multiple cloud platforms"
+                        description="Certifications and Applied Skills across multiple platforms"
                         delay={0}
                     />
 
@@ -119,7 +119,7 @@ const CertificationStats: React.FC = () => {
                         icon={<Star size={28} className="text-white" />}
                         title="Microsoft Certified"
                         value={microsoftCerts}
-                        description="Azure and Microsoft 365 certifications"
+                        description="Azure, Microsoft 365, and Applied Skills"
                         delay={0.2}
                     />
 
@@ -166,6 +166,8 @@ const CertificationStats: React.FC = () => {
                         >
                             {/* First set of badges */}
                             {[
+                                "AI Transformation Leader",
+                                "AI Business Professional",
                                 "Azure Solutions Architect Expert",
                                 "Azure AI Engineer Associate",
                                 "DevOps Engineer Expert",
@@ -185,6 +187,8 @@ const CertificationStats: React.FC = () => {
 
                             {/* Duplicate set for seamless loop */}
                             {[
+                                "AI Transformation Leader",
+                                "AI Business Professional",
                                 "Azure Solutions Architect Expert",
                                 "Azure AI Engineer Associate",
                                 "DevOps Engineer Expert",
@@ -216,8 +220,8 @@ const CertificationStats: React.FC = () => {
                     <div className="glass-effect rounded-2xl p-8 bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/30">
                         <h3 className="text-2xl font-bold text-white mb-4">Latest Achievement</h3>
                         <p className="text-green-400 text-lg mb-2">Microsoft Certified</p>
-                        <p className="text-white font-semibold">Microsoft 365 Certified: Copilot and Agent Administration Fundamentals</p>
-                        <p className="text-gray-400 text-sm mt-2">Earned February 2026</p>
+                        <p className="text-white font-semibold">Microsoft Certified: AI Transformation Leader</p>
+                        <p className="text-gray-400 text-sm mt-2">Earned March 2026</p>
                     </div>
                 </motion.div>
             </div>
