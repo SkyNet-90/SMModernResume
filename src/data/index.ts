@@ -20,6 +20,14 @@ export const experiences: Experience[] = [
 export const certifications: Certification[] = [
   // Latest Certifications (2025-2026)
   {
+    name: "Microsoft Certified: Agentic AI Business Solutions Architect",
+    issuer: "Microsoft",
+    issued: "Mar 2026",
+    expires: "Mar 2027",
+    credentialId: "60H770-7A43B8",
+    logo: "microsoft"
+  },
+  {
     name: "Microsoft Certified: AI Transformation Leader",
     issuer: "Microsoft",
     issued: "Mar 2026",
