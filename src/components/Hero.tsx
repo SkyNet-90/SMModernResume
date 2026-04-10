@@ -33,10 +33,10 @@ const Hero: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="mb-8"
           >
-            <h2 className="text-2xl md:text-3xl text-gray-300 mb-4">Cloud Engineer</h2>
+            <h2 className="text-2xl md:text-3xl text-gray-300 mb-4">Cloud Solutions Architect & Technical Lead</h2>
             <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              Specializing in Azure, AWS, and multi-cloud architectures.
-              Passionate about AI-powered automation, infrastructure as code, and building scalable cloud solutions!
+              Architecting secure, scalable cloud solutions across Azure and AWS.
+              Driving AI-powered transformation, infrastructure as code, and building the technical communities that make cloud adoption stick.
             </p>
           </motion.div>
 

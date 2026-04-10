@@ -6,12 +6,12 @@ export const experiences: Experience[] = [
     company: "Greenberg Traurig",
     location: "Global",
     duration: "2024 - Present",
-    description: "Design, architect, and lead cloud initiatives across a global Azure environment serving 5,200 users, three major firm-wide applications, and 49 offices worldwide. Recognized as the firm's Azure Subject Matter Expert and leader in AI-powered automation, cost optimization, and secure infrastructure design.",
+    description: "Recognized as the firm's Azure Subject Matter Expert, architecting and leading cloud transformation across a global Azure environment serving 5,200 users, three major firm-wide applications, and 49 offices worldwide. Drives AI-powered automation strategy, infrastructure modernization, and org-wide cloud adoption.",
     responsibilities: [
-      "Developed Solutions: Delivered a firm-wide digital records onboarding/offboarding tracker and automated cloud resource lifecycle management, eliminating hours of manual work and improving compliance tracking",
-      "Infrastructure as Code: Standardized Azure policy deployment using Terraform, enabling rapid rollout of tagging enforcement, resource creation restrictions, and diagnostic configurations across the global environment",
+      "Cloud Education & Adoption: Founded and scaled GT Learn To Cloud program, engaging ~130 technical staff in cloud training and certification pathways — resulting in 7+ employees earning cloud certifications and measurably accelerating firm-wide cloud adoption",
       "Cost Optimization: Implemented budget and anomaly monitoring with automated cost analysis, reducing annual cloud spend by 25% through right-sizing and decommissioning unused assets",
-      "Cloud Education & Adoption: Founded and lead GT Learn To Cloud program, engaging ~130 technical staff in cloud training and certification pathways, resulting in 7+ employees earning cloud certifications",
+      "Infrastructure as Code: Standardized Azure policy deployment using Terraform, enabling rapid rollout of tagging enforcement, resource creation restrictions, and diagnostic configurations across the global environment",
+      "Developed Solutions: Delivered a firm-wide digital records onboarding/offboarding tracker and automated cloud resource lifecycle management, eliminating hours of manual work and improving compliance tracking",
       "Security & Compliance: Partnered with security team to achieve and maintain ISO 27017 cloud security certification for two consecutive years, architecting secure environments and providing compliance evidence for clients"
     ]
   }
